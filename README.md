@@ -6,7 +6,7 @@ This project consists of three crates:
 
 2. Hangman server. This is the server. Run this to play the game. Unless you edit the code, it runs at localhost:8080.
 
-3. Hangmanc lient. This is an example client and does almost nothing useful. It demonstrates basic communication with the server and implements a random solver and a manual solver. In most cases, the manual solver will be slightly more effective than the random solver.
+3. Hangman client. This is an example client and does almost nothing useful. It demonstrates basic communication with the server and implements a random solver and a manual solver. In most cases, the manual solver will be slightly more effective than the random solver.
 
 ## Hangman server
 

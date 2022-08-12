@@ -2,7 +2,7 @@ use std::{fs, io, process};
 
 use clap::{Parser, Subcommand};
 use hangman::{CreateGameResponse, UpdateGameRequest, UpdateGameResponse};
-use reqwest::blocking::Client;
+use reqwest::{blocking::Client, StatusCode};
 use solver::{RandomSolver, Solver, UserInputSolver};
 
 mod solver;
@@ -51,11 +51,18 @@ fn run(args: &Args) -> anyhow::Result<()> {
 
     loop {
         let letter = solver.next_letter(&word, guesses_remaining).to_string();
-        let update: UpdateGameResponse = client
-            .put(&game_url)
-            .json(&UpdateGameRequest { letter })
-            .send()?
-            .json()?;
+        let update = client.put(&game_url).json(&UpdateGameRequest { letter });
+
+        let update: UpdateGameResponse = match update.send() {
+            Ok(response) => response.json()?,
+            Err(e) if e.status() == Some(StatusCode::BAD_REQUEST) => {
+                // The most likely reason for this error is a bad request, which we don't really
+                // care about. It's probably just the server whining that you already guessed the
+                // letter C.
+                continue;
+            }
+            Err(e) => return Err(e.into()),
+        };
 
         match update {
             UpdateGameResponse::Finalize { victory, message } => {

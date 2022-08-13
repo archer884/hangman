@@ -76,6 +76,7 @@ pub enum UpdateGameResponse {
     Finalize {
         victory: bool,
         message: Cow<'static, str>,
+        word: String,
     },
 }
 
@@ -84,17 +85,19 @@ impl UpdateGameResponse {
         UpdateGameResponse::Update(GameResponse::new(game))
     }
 
-    pub fn win(message: &'static str) -> Self {
+    pub fn win(word: impl Into<String>, message: &'static str) -> Self {
         UpdateGameResponse::Finalize {
             victory: true,
             message: message.into(),
+            word: word.into(),
         }
     }
 
-    pub fn lose(message: &'static str) -> Self {
+    pub fn lose(word: impl Into<String>, message: &'static str) -> Self {
         UpdateGameResponse::Finalize {
             victory: false,
             message: message.into(),
+            word: word.into(),
         }
     }
 }

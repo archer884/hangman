@@ -85,12 +85,14 @@ async fn read_game(id: web::Path<Uuid>, data: Data<AppStateWithGameDb>) -> Resul
 
     if game.is_lost() {
         return Ok(web::Json(UpdateGameResponse::lose(
+            &game.word,
             "Better luck next time!",
         )));
     }
 
     if game.is_won() {
         return Ok(web::Json(UpdateGameResponse::win(
+            &game.word,
             "I said you won! Stop rubbing it in. >.<",
         )));
     }
@@ -128,12 +130,14 @@ async fn update_game(
 
     if game.is_lost() {
         return Ok(web::Json(UpdateGameResponse::lose(
+            &game.word,
             "Better luck next time!",
         )));
     }
 
     if game.is_won() {
         return Ok(web::Json(UpdateGameResponse::win(
+            &game.word,
             "I said you won! Stop rubbing it in. >.<",
         )));
     }
@@ -159,9 +163,15 @@ async fn update_game(
         game.correct.insert(guess);
         if game.is_won() {
             if game.guesses_remaining() >= 3 {
-                return Ok(web::Json(UpdateGameResponse::win("FLAWLESS VICTORY!")));
+                return Ok(web::Json(UpdateGameResponse::win(
+                    &game.word,
+                    "FLAWLESS VICTORY!",
+                )));
             } else {
-                return Ok(web::Json(UpdateGameResponse::win("Victory is yours!")));
+                return Ok(web::Json(UpdateGameResponse::win(
+                    &game.word,
+                    "Victory is yours!",
+                )));
             }
         }
 
@@ -170,6 +180,7 @@ async fn update_game(
         game.incorrect.insert(guess);
         if game.is_lost() {
             return Ok(web::Json(UpdateGameResponse::lose(
+                &game.word,
                 "Sorry, friend. You've been hanged!",
             )));
         }

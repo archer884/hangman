@@ -615,8 +615,10 @@ dependencies = [
  "anyhow",
  "clap",
  "hangman",
+ "hashbrown",
  "rand",
  "read_input",
+ "regex",
  "reqwest",
  "squirrel-rng",
 ]
